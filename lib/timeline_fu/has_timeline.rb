@@ -8,7 +8,7 @@ module TimelineFu
       # Who's this timeline for? User? Person?
       # Go and put has_timeline in the model's class definition. 
       def has_timeline
-        has_many :timeline_events, :as => :target
+        has_many :timeline_events, :as => :actor
       end
     end
   end

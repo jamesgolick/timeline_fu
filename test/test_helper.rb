@@ -30,11 +30,8 @@ class Person < ActiveRecord::Base
   
   fires :follow_created,  :on     => :update, 
                           :actor  => :new_watcher, 
-                          :target => :self, 
                           :if     => lambda { |person| !person.new_watcher.nil? }
   fires :person_updated,  :on     => :update, 
-                          :actor  => :self, 
-                          :target => :self, 
                           :if     => :fire?
   
   def fire?
@@ -45,10 +42,8 @@ end
 class List < ActiveRecord::Base
   belongs_to :author, :class_name => "Person"
   
-  fires :list_created,  :actor            => :author, 
-                        :secondary_target => :self, 
-                        :target           => :self, 
-                        :on               => :create
+  fires :list_created,  :actor  => :author, 
+                        :on     => :create
 end
 
 TimelineEvent = Class.new
