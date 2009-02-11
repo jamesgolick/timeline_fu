@@ -19,7 +19,7 @@ class FiresTest < Test::Unit::TestCase
   end
   
   def test_should_not_fire_if_the_if_condition_evaluates_to_false
-    TimelineEvent.expects(:create!).with(:actor => @mat, :target => @james, :event_type => 'follow_created').times(0)
+    TimelineEvent.expects(:create!).never
     @james.new_watcher = nil
     @james.save
   end
@@ -32,7 +32,7 @@ class FiresTest < Test::Unit::TestCase
   
   def test_should_fire_event_with_symbol_based_if_condition
     @james.fire = false
-    TimelineEvent.expects(:create!).with(:actor => @james, :target => @james, :event_type => 'person_updated').times(0)
+    TimelineEvent.expects(:create!).never
     @james.save
   end
 end
