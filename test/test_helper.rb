@@ -25,7 +25,7 @@ ActiveRecord::Schema.define(:version => 0) do
 end
 
 class Person < ActiveRecord::Base
-  acts_as_event_target
+  has_timeline
   attr_accessor :new_watcher, :fire
   
   fires :follow_created, :on => :update, :actor => :new_watcher, :target => :self, :if => lambda { |person| !person.new_watcher.nil? }

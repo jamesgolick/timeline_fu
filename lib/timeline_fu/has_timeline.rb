@@ -1,13 +1,13 @@
 module TimelineFu
-  module ActsAsEventTarget
+  module HasTimeline
     def self.included(klass)
       klass.send(:extend, ClassMethods)
     end
 
     module ClassMethods
       # Who's this timeline for? User? Person?
-      # Go and put acts_as_event_target in the model's class definition. 
-      def acts_as_event_target
+      # Go and put has_timeline in the model's class definition. 
+      def has_timeline
         has_many :timeline_events, :as => :target
       end
     end
