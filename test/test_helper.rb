@@ -25,7 +25,6 @@ ActiveRecord::Schema.define(:version => 0) do
 end
 
 class Person < ActiveRecord::Base
-  has_timeline
   attr_accessor :new_watcher, :fire
   
   fires :follow_created,  :on     => :update, 
