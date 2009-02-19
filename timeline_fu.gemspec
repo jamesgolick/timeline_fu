@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.date = %q{2009-02-19}
   s.description = %q{Easily build timelines, much like GitHub's news feed}
   s.email = %q{james@giraffesoft.ca}
-  s.files = ["README.rdoc", "VERSION.yml", "generators/timeline_fu", "generators/timeline_fu/templates", "generators/timeline_fu/templates/migration.rb", "generators/timeline_fu/templates/model.rb", "generators/timeline_fu/timeline_event_generator.rb", "generators/timeline_fu/USAGE", "lib/timeline_fu", "lib/timeline_fu/fires.rb", "lib/timeline_fu.rb", "test/fires_test.rb", "test/test_helper.rb"]
+  s.files = ["README.rdoc", "VERSION.yml", "generators/timeline_fu", "generators/timeline_fu/templates", "generators/timeline_fu/templates/migration.rb", "generators/timeline_fu/templates/model.rb", "generators/timeline_fu/timeline_fu_generator.rb", "generators/timeline_fu/USAGE", "lib/timeline_fu", "lib/timeline_fu/fires.rb", "lib/timeline_fu.rb", "test/fires_test.rb", "test/test_helper.rb"]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/giraffesoft/timeline_fu}
   s.rdoc_options = ["--inline-source", "--charset=UTF-8"]
