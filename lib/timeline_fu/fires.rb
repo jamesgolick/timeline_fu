@@ -4,15 +4,10 @@ module TimelineFu
       klass.send(:extend, ClassMethods)
     end
 
-    class MissingOnArgument < ArgumentError
-      def initialize(options)
-        super "You did not provide the :on key in: #{options.inspect}"
-      end
-    end
-
     module ClassMethods
       def fires(event_type, opts)
-        raise MissingOnArgument.new(opts) unless opts.has_key?(:on)
+        raise ArgumentError, "Argument :on is mandatory" unless opts.has_key?(:on)
+
         method_name = :"fire_#{event_type}_after_#{opts[:on]}"
         define_method(method_name) do
           create_options = [:actor, :subject, :secondary_subject].inject({}) do |memo, sym|
