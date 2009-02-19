@@ -1,0 +1,43 @@
+= TimelineFu
+
+Easily build timelines, much like GitHub's news feed.
+
+
+
+== Requirements
+
+You'll need a TimelineEvent model, which TimelineFu will use. 
+The name is hard-coded, but contributions are welcome.
+
+Your TimelineEvent model will receive the following parameters in #create!
+
+- event_type
+- target
+- secondary_target
+- actor
+
+It is your responsibility as the developer to correctly associate the objects
+to your columns (or however you're storing them).  You could associate
+polymorphically using this:
+
+  class TimelineEvent < ActiveRecord::Base
+    belongs_to :target,            :polymorphic => true
+    belongs_to :secondary_target,  :polymorphic => true
+    belongs_to :actor,             :polymorphic => true
+  end
+
+For each object that can be a target of events, make it an event target:
+
+  class Commit < ActiveRecord::Base
+    acts_as_event_target
+  end
+
+  class Comment < ActiveRecord::Base
+    acts_as_event_target
+  end
+
+  class Repository < ActiveRecord::Base
+    acts_as_event_target
+  end
+
+Copyright (c) 2008 James Golick, released under the MIT license
