@@ -24,6 +24,17 @@ class FiresTest < Test::Unit::TestCase
     @comment.save
   end
 
+  def test_exception_raised_if_on_missing
+    # This needs to be tested with should_raise, to check out the msg content
+    assert_raise(ArgumentError) do
+      some_class = Class.new(ActiveRecord::Base)
+      some_class.class_eval do
+        attr_accessor :someone
+        fires :some_event, :actor => :someone
+      end
+    end
+  end
+
   def test_should_only_fire_if_the_condition_evaluates_to_true
     TimelineEvent.expects(:create!).with(:actor => @mat, :subject => @james, :event_type => 'follow_created')
     @james.new_watcher = @mat
