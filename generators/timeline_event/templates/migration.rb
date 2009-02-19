@@ -1,4 +1,4 @@
-class CreateTimelineEvent < ActiveRecord::Migration
+class CreateTimelineEvents < ActiveRecord::Migration
   def self.up
     create_table :timeline_events do |t|
       t.string   :event_type, :subject_type,  :actor_type,  :secondary_actor_type
