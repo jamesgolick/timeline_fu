@@ -17,10 +17,15 @@ ActiveRecord::Schema.define(:version => 0) do
     t.string  :email,    :default => ''
     t.string  :password, :default => ''
   end
-  
+
   create_table :lists do |t|
     t.integer :author_id
     t.string  :title
+  end
+
+  create_table :comments do |t|
+    t.integer :list_id, :author_id
+    t.string  :body
   end
 end
 
@@ -30,9 +35,9 @@ class Person < ActiveRecord::Base
   fires :follow_created,  :on     => :update, 
                           :actor  => :new_watcher, 
                           :if     => lambda { |person| !person.new_watcher.nil? }
-  fires :person_updated,  :on     => :update, 
+  fires :person_updated,  :on     => :update,
                           :if     => :fire?
-  
+
   def fire?
     new_watcher.nil? && fire
   end
@@ -40,9 +45,19 @@ end
 
 class List < ActiveRecord::Base
   belongs_to :author, :class_name => "Person"
+  has_many :comments
   
   fires :list_created,  :actor  => :author, 
                         :on     => :create
+end
+
+class Comment < ActiveRecord::Base
+  belongs_to :list
+  belongs_to :author, :class_name => "Person"
+
+  fires :comment_created, :actor  => :author,
+                          :on     => :create,
+                          :secondary_subject => :list
 end
 
 TimelineEvent = Class.new

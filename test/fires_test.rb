@@ -11,7 +11,19 @@ class FiresTest < Test::Unit::TestCase
     TimelineEvent.expects(:create!).with(:actor => @james, :subject => @list, :event_type => 'list_created')
     @list.save
   end
-  
+
+  def test_should_fire_event_with_secondary_subject
+    @list = List.new(hash_for_list(:author => @james));
+    TimelineEvent.stubs(:create!)
+    @list.save
+    @comment = Comment.new(:body => 'cool list!', :author => @mat, :list => @list)
+    TimelineEvent.expects(:create!).with(:actor             => @mat, 
+                                         :subject           => @comment, 
+                                         :secondary_subject => @list, 
+                                         :event_type        => 'comment_created')
+    @comment.save
+  end
+
   def test_should_only_fire_if_the_condition_evaluates_to_true
     TimelineEvent.expects(:create!).with(:actor => @mat, :subject => @james, :event_type => 'follow_created')
     @james.new_watcher = @mat
