@@ -15,7 +15,7 @@ module TimelineFu
         raise MissingOnArgument.new(opts) unless opts.has_key?(:on)
         method_name = :"fire_#{event_type}_after_#{opts[:on]}"
         define_method(method_name) do
-          create_options = [:subject, :actor, :secondary_actor].inject({}) do |memo, sym|
+          create_options = [:actor, :subject, :secondary_subject].inject({}) do |memo, sym|
             memo[sym] = send(opts[sym]) if opts[sym]
             memo
           end
