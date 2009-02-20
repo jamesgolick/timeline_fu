@@ -2,42 +2,103 @@
 
 Easily build timelines, much like GitHub's news feed.
 
+== Usage
 
+TimelineFu requires you to have a TimelineEvent model. 
+The simplest way is to use the generator.
 
-== Requirements
+  $ script/generate timeline_fu
+        exists  db/migrate
+        create  db/migrate/20090333222034_create_timeline_events.rb
+        create  app/models/timeline_event.rb
 
-You'll need a TimelineEvent model, which TimelineFu will use. 
-The name is hard-coded, but contributions are welcome.
+Next step is to determine what generates an event in your various models.
 
-Your TimelineEvent model will receive the following parameters in #create!
-
-- event_type
-- target
-- secondary_target
-- actor
-
-It is your responsibility as the developer to correctly associate the objects
-to your columns (or however you're storing them).  You could associate
-polymorphically using this:
-
-  class TimelineEvent < ActiveRecord::Base
-    belongs_to :target,            :polymorphic => true
-    belongs_to :secondary_target,  :polymorphic => true
-    belongs_to :actor,             :polymorphic => true
+  class Post < ActiveRecord::Base
+    #...
+    belongs_to :author, :class_name => 'Person'
+    fires :new_post, :on    => :create,
+                     :actor => :author
   end
 
-For each object that can be a target of events, make it an event target:
+You can add 'fires' statements to as many models as you want on as many models
+as you want. 
 
-  class Commit < ActiveRecord::Base
-    acts_as_event_target
-  end
+They are hooked for you after standard ActiveRecord events. In
+the previous example, it's an after_create on Posts. 
+
+=== Parameters for #fires
+
+You can supply a few parameters to fires, two of them are mandatory.
+- the first param is a custom name for the event type. It'll be your way of 
+figuring out what events your reading back from the timeline_events table
+later.
+  - :new_post in the example
+
+The rest all fit neatly in an options hash.
+
+- :on => [ActiveRecord event] 
+  - mandatory. You use it to specify whether you want the event.
+  created after a create, update or destroy.
+- :actor is your way of specifying who took this action.
+  - In the example, post.author is going to be this person.
+- :subject is automatically set to self, which is good most of the time. 
+You can however override it if you need to, using :subject.
+- :secondary_subject can let you specify something else that's related
+to the event. A comment to a blog post would be a good example.
+- :if => symbol or proc/lambda lets you put conditions on when a 
+TimelineEvent is created. It's passed right to the after_xxx ActiveRecord 
+event hook, so it's has the same behavior.
+
+Here's another example:
 
   class Comment < ActiveRecord::Base
-    acts_as_event_target
+    #...
+    belongs_to :commenter, :class_name => 'Person'
+    belongs_to :post
+    fires :new_comment, :on => :create,
+                        :actor => :commenter,
+                        #implicit :subject => self,
+                        :secondary_subject => 'post',
+                        :if => lambda { |comment| 
+                          comment.commenter != comment.post.author 
+                        }
   end
 
-  class Repository < ActiveRecord::Base
-    acts_as_event_target
+=== TimelineEvent instantiation
+
+The ActiveRecord event hook will automatically instantiate a 
+TimelineEvent instance for you.
+It will receive the following parameters in #create!
+
+- event_type 
+  - "new_comment" in the comment example
+- actor 
+  - the commenter
+- subject
+  - the comment instance
+- secondary_subject
+  - the post instance
+
+The generated model stores most of its info as polymorphic relationships.
+
+  class TimelineEvent < ActiveRecord::Base
+    belongs_to :actor,              :polymorphic => true
+    belongs_to :subject,            :polymorphic => true
+    belongs_to :secondary_subject,  :polymorphic => true
   end
+
+== Get it
+
+timeline_fu can be used as a plugin:
+
+  $ script/plugin install git://github.com/giraffesoft/timeline_fu.git
+
+or as a gem plugin:
+
+  config.gem "giraffesoft-timeline_fu", :lib => "timeline_fu", 
+    :source => "http://gems.github.com"
+
+== License
 
 Copyright (c) 2008 James Golick, released under the MIT license
