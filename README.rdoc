@@ -31,9 +31,7 @@ the previous example, it's an after_create on Posts.
 === Parameters for #fires
 
 You can supply a few parameters to fires, two of them are mandatory.
-- the first param is a custom name for the event type. It'll be your way of 
-figuring out what events your reading back from the timeline_events table
-later.
+- the first param is a custom name for the event type. It'll be your way of figuring out what events your reading back from the timeline_events table later.
   - :new_post in the example
 
 The rest all fit neatly in an options hash.
