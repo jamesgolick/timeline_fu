@@ -39,17 +39,12 @@ later.
 The rest all fit neatly in an options hash.
 
 - :on => [ActiveRecord event] 
-  - mandatory. You use it to specify whether you want the event.
-  created after a create, update or destroy.
+  - mandatory. You use it to specify whether you want the event created after a create, update or destroy.
 - :actor is your way of specifying who took this action.
   - In the example, post.author is going to be this person.
-- :subject is automatically set to self, which is good most of the time. 
-You can however override it if you need to, using :subject.
-- :secondary_subject can let you specify something else that's related
-to the event. A comment to a blog post would be a good example.
-- :if => symbol or proc/lambda lets you put conditions on when a 
-TimelineEvent is created. It's passed right to the after_xxx ActiveRecord 
-event hook, so it's has the same behavior.
+- :subject is automatically set to self, which is good most of the time.  You can however override it if you need to, using :subject.
+- :secondary_subject can let you specify something else that's related to the event. A comment to a blog post would be a good example.
+- :if => symbol or proc/lambda lets you put conditions on when a TimelineEvent is created. It's passed right to the after_xxx ActiveRecord event hook, so it's has the same behavior.
 
 Here's another example:
 
