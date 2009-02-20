@@ -54,9 +54,7 @@ Here's another example:
                         :actor              => :commenter,
                         #implicit :subject  => self,
                         :secondary_subject  => 'post',
-                        :if => lambda { |comment| 
-                          comment.commenter != comment.post.author 
-                        }
+                        :if => lambda { |comment| comment.commenter != comment.post.author }
   end
 
 === TimelineEvent instantiation
