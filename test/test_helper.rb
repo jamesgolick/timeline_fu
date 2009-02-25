@@ -55,9 +55,13 @@ class Comment < ActiveRecord::Base
   belongs_to :list
   belongs_to :author, :class_name => "Person"
 
-  fires :comment_created, :actor  => :author,
-                          :on     => :create,
+  fires :comment_created, :actor   => :author,
+                          :on      => :create,
                           :secondary_subject => :list
+  fires :comment_deleted, :actor   => :author,
+                          :on      => :destroy,
+                          :subject => :list,
+                          :secondary_subject => :self
 end
 
 TimelineEvent = Class.new

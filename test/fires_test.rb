@@ -58,4 +58,18 @@ class FiresTest < Test::Unit::TestCase
     TimelineEvent.expects(:create!).never
     @james.save
   end
+
+  def test_should_set_secondary_subject_to_self_when_requested
+    @list = List.new(hash_for_list(:author => @james));
+    TimelineEvent.stubs(:create!).with(has_entry(:event_type, "list_created"))
+    @list.save
+    @comment = Comment.new(:body => 'cool list!', :author => @mat, :list => @list)
+    TimelineEvent.stubs(:create!).with(has_entry(:event_type, "comment_created"))
+    @comment.save
+    TimelineEvent.expects(:create!).with(:actor             => @mat, 
+                                         :subject           => @list, 
+                                         :secondary_subject => @comment, 
+                                         :event_type        => 'comment_deleted')
+    @comment.destroy
+  end
 end
