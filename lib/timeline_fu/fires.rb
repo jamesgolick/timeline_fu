@@ -7,6 +7,7 @@ module TimelineFu
     module ClassMethods
       def fires(event_type, opts)
         raise ArgumentError, "Argument :on is mandatory" unless opts.has_key?(:on)
+        opts[:subject] = :self unless opts.has_key?(:subject)
 
         method_name = :"fire_#{event_type}_after_#{opts[:on]}"
         define_method(method_name) do
@@ -19,7 +20,6 @@ module TimelineFu
             end
             memo
           end
-          create_options[:subject]  ||= self
           create_options[:event_type] = event_type.to_s
 
           TimelineEvent.create!(create_options)
