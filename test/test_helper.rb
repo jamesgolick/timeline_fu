@@ -27,6 +27,15 @@ ActiveRecord::Schema.define(:version => 0) do
     t.integer :list_id, :author_id
     t.string  :body
   end
+
+  create_table :sites do |t|
+    t.string  :name
+  end
+
+  create_table :articles do |t|
+    t.integer :site_id
+    t.string :body
+  end
 end
 
 class Person < ActiveRecord::Base
@@ -62,6 +71,18 @@ class Comment < ActiveRecord::Base
                           :on      => :destroy,
                           :subject => :list,
                           :secondary_subject => :self
+end
+
+class Site < ActiveRecord::Base
+end
+
+class Article < ActiveRecord::Base
+  belongs_to :author, :class_name => "Person"
+  belongs_to :site
+
+  fires :article_created, :actor => :author,
+                          :on    => :create,
+                          :site  => :site
 end
 
 TimelineEvent = Class.new

@@ -75,4 +75,11 @@ class FiresTest < Test::Unit::TestCase
                                          :event_type        => 'comment_deleted')
     @comment.destroy
   end
+
+  def test_should_set_additional_attributes_when_present
+    @site = Site.create(:name => 'foo.com')
+    @article = Article.new(:body => 'cool article!', :author => @james, :site => @site)
+    TimelineEvent.expects(:create!).with(:actor => @james, :subject => @article, :event_type => 'article_created', :site => @site)
+    @article.save
+  end
 end
