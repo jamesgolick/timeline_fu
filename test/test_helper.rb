@@ -47,8 +47,8 @@ class List < ActiveRecord::Base
   belongs_to :author, :class_name => "Person"
   has_many :comments
   
-  fires :list_created,  :actor  => :author, 
-                        :on     => :create
+  fires :list_created_or_updated,  :actor  => :author, 
+                                   :on     => [:create, :update]
 end
 
 class Comment < ActiveRecord::Base

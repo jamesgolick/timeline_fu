@@ -8,7 +8,10 @@ class FiresTest < Test::Unit::TestCase
   
   def test_should_fire_the_appropriate_callback
     @list = List.new(hash_for_list(:author => @james));
-    TimelineEvent.expects(:create!).with(:actor => @james, :subject => @list, :event_type => 'list_created')
+    TimelineEvent.expects(:create!).with(:actor => @james, :subject => @list, :event_type => 'list_created_or_updated')
+    @list.save
+    TimelineEvent.expects(:create!).with(:actor => @mat, :subject => @list, :event_type => 'list_created_or_updated')
+    @list.author = @mat
     @list.save
   end
 
@@ -61,7 +64,7 @@ class FiresTest < Test::Unit::TestCase
 
   def test_should_set_secondary_subject_to_self_when_requested
     @list = List.new(hash_for_list(:author => @james));
-    TimelineEvent.stubs(:create!).with(has_entry(:event_type, "list_created"))
+    TimelineEvent.stubs(:create!).with(has_entry(:event_type, "list_created_or_updated"))
     @list.save
     @comment = Comment.new(:body => 'cool list!', :author => @mat, :list => @list)
     TimelineEvent.stubs(:create!).with(has_entry(:event_type, "comment_created"))

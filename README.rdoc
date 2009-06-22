@@ -37,7 +37,7 @@ You can supply a few parameters to fires, two of them are mandatory.
 The rest all fit neatly in an options hash.
 
 - :on => [ActiveRecord event] 
-  - mandatory. You use it to specify whether you want the event created after a create, update or destroy.
+  - mandatory. You use it to specify whether you want the event created after a create, update or destroy. You can also supply an array of events, e.g. [:create, :update].
 - :actor is your way of specifying who took this action.
   - In the example, post.author is going to be this person.
 - :subject is automatically set to self, which is good most of the time.  You can however override it if you need to, using :subject.
