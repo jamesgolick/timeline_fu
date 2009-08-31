@@ -18,6 +18,7 @@ module TimelineFu
 
         on = opts.delete(:on)
         _if = opts.delete(:if)
+        _unless = opts.delete(:unless)
 
         method_name = :"fire_#{event_type}_after_#{on}"
         define_method(method_name) do
@@ -38,7 +39,7 @@ module TimelineFu
           TimelineEvent.create!(create_options)
         end
 
-        send(:"after_#{on}", method_name, :if => _if)
+        send(:"after_#{on}", method_name, :if => _if, :unless => _unless)
       end
     end
   end
