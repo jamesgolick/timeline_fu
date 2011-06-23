@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{timeline_fu}
-  s.version = "0.3.0"
+  s.version = "0.4.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["James Golick", "Mathieu Martin", "Francois Beausoleil"]
-  s.date = %q{2009-06-26}
+  s.date = %q{2011-06-23}
   s.description = %q{Easily build timelines, much like GitHub's news feed}
   s.email = %q{james@giraffesoft.ca}
   s.extra_rdoc_files = [
