@@ -94,14 +94,8 @@ Contributions are welcome :-)
 
 == Get it
 
-timeline_fu can be used as a plugin:
-
-  $ script/plugin install git://github.com/giraffesoft/timeline_fu.git
-
-or as a gem plugin:
-
-  config.gem "giraffesoft-timeline_fu", :lib => "timeline_fu", 
-    :source => "http://gems.github.com"
+  # Gemfile
+  gem "timeline_fu"
 
 == License
 
