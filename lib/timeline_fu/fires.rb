@@ -19,11 +19,14 @@ module TimelineFu
         method_name = :"fire_#{event_type}_after_#{opts[:on]}"
         define_method(method_name) do
           create_options = [:actor, :subject, :secondary_subject].inject({}) do |memo, sym|
-            case opts[sym]
-            when :self
-              memo[sym] = self
-            else
-              memo[sym] = send(opts[sym]) if opts[sym]
+            if opts[sym]
+              if opts[sym].respond_to?(:call)
+                memo[sym] = opts[sym].call(self)
+              elsif opts[sym] == :self
+                memo[sym] = self
+              else
+                memo[sym] = send(opts[sym])
+              end
             end
             memo
           end
