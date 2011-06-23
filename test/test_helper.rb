@@ -33,7 +33,7 @@ class Person < ActiveRecord::Base
   attr_accessor :new_watcher, :fire
   
   fires :follow_created,  :on     => :update, 
-                          :actor  => :new_watcher, 
+                          :actor  => lambda { |person| person.new_watcher }, 
                           :if     => lambda { |person| !person.new_watcher.nil? }
   fires :person_updated,  :on     => :update,
                           :if     => :fire?
