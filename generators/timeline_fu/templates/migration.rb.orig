@@ -11,7 +11,11 @@ class CreateTimelineEvents < ActiveRecord::Migration
     add_index :timeline_events, [:secondary_subject_id , :secondary_subject_type], :name => 'secondary_subject_timeline_events'
   end
 
+<<<<<<< HEAD
   def down
+=======
+  def self.down
+>>>>>>> bf7f94a... added indices to timeline_events migration
     drop_table :timeline_events
   end
 end
