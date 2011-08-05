@@ -32,7 +32,6 @@ Gem::Specification.new do |s|
      "test/test_helper.rb",
      "timeline_fu.gemspec"
   ]
-  s.has_rdoc = true
   s.homepage = %q{http://github.com/giraffesoft/timeline_fu}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
