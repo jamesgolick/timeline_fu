@@ -6,10 +6,10 @@ class CreateTimelineEvents < ActiveRecord::Migration
       t.timestamps
     end
   end
- 
+
   def self.down
     drop_table :timeline_events
   end
 end
- 
+
 
