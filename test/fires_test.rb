@@ -63,11 +63,17 @@ class FiresTest < Test::Unit::TestCase
   end
 
   def test_should_set_secondary_subject_to_self_when_requested
-    @list = List.new(hash_for_list(:author => @james));
-    TimelineEvent.stubs(:create!).with(has_entry(:event_type, "list_created_or_updated"))
+    @list = List.new(hash_for_list(:author => @james))
+    TimelineEvent.expects(:create!).with(:actor             => @james,
+                                         :subject           => @list,
+                                         :secondary_subject => @list,
+                                         :event_type        => 'list_created_or_updated')
     @list.save
     @comment = Comment.new(:body => 'cool list!', :author => @mat, :list => @list)
-    TimelineEvent.stubs(:create!).with(has_entry(:event_type, "comment_created"))
+    TimelineEvent.expects(:create!).with(:actor             => @mat,
+                                         :subject           => @comment,
+                                         :secondary_subject => @comment,
+                                         :event_type        => 'comment_created')
     @comment.save
     TimelineEvent.expects(:create!).with(:actor             => @mat, 
                                          :subject           => @list, 
