@@ -2,15 +2,16 @@ require File.dirname(__FILE__)+'/test_helper'
 
 class FiresTest < Test::Unit::TestCase
   def setup
-    @james = create_person(:email => 'james@giraffesoft.ca')
-    @mat   = create_person(:email => 'mat@giraffesoft.ca')
+    @account = create_account
+    @james = create_person(:account => @account, :email => 'james@giraffesoft.ca')
+    @mat   = create_person(:account => @account, :email => 'mat@giraffesoft.ca')
   end
   
   def test_should_fire_the_appropriate_callback
     @list = List.new(hash_for_list(:author => @james));
-    TimelineEvent.expects(:create!).with(:actor => @james, :subject => @list, :event_type => 'list_created_or_updated')
+    TimelineEvent.expects(:create!).with(:account => @account, :actor => @james, :subject => @list, :event_type => 'list_created_or_updated')
     @list.save
-    TimelineEvent.expects(:create!).with(:actor => @mat, :subject => @list, :event_type => 'list_created_or_updated')
+    TimelineEvent.expects(:create!).with(:account => @account, :actor => @mat, :subject => @list, :event_type => 'list_created_or_updated')
     @list.author = @mat
     @list.save
   end
@@ -20,7 +21,8 @@ class FiresTest < Test::Unit::TestCase
     TimelineEvent.stubs(:create!)
     @list.save
     @comment = Comment.new(:body => 'cool list!', :author => @mat, :list => @list)
-    TimelineEvent.expects(:create!).with(:actor             => @mat, 
+    TimelineEvent.expects(:create!).with(:account           => @account,
+                                         :actor             => @mat, 
                                          :subject           => @comment, 
                                          :secondary_subject => @list, 
                                          :event_type        => 'comment_created')
@@ -39,7 +41,7 @@ class FiresTest < Test::Unit::TestCase
   end
 
   def test_should_only_fire_if_the_condition_evaluates_to_true
-    TimelineEvent.expects(:create!).with(:actor => @mat, :subject => @james, :event_type => 'follow_created')
+    TimelineEvent.expects(:create!).with(:account => @account, :actor => @mat, :subject => @james, :event_type => 'follow_created')
     @james.new_watcher = @mat
     @james.save
   end
@@ -52,7 +54,7 @@ class FiresTest < Test::Unit::TestCase
   
   def test_should_fire_event_with_symbol_based_if_condition_that_is_true
     @james.fire = true
-    TimelineEvent.expects(:create!).with(:subject => @james, :event_type => 'person_updated')
+    TimelineEvent.expects(:create!).with(:account => @account, :subject => @james, :event_type => 'person_updated')
     @james.save
   end
   
@@ -64,18 +66,21 @@ class FiresTest < Test::Unit::TestCase
 
   def test_should_set_secondary_subject_to_self_when_requested
     @list = List.new(hash_for_list(:author => @james))
-    TimelineEvent.expects(:create!).with(:actor             => @james,
+    TimelineEvent.expects(:create!).with(:account           => @account,
+                                         :actor             => @james,
                                          :subject           => @list,
                                          :secondary_subject => @list,
                                          :event_type        => 'list_created_or_updated')
     @list.save
     @comment = Comment.new(:body => 'cool list!', :author => @mat, :list => @list)
-    TimelineEvent.expects(:create!).with(:actor             => @mat,
+    TimelineEvent.expects(:create!).with(:account           => @account,
+                                         :actor             => @mat,
                                          :subject           => @comment,
                                          :secondary_subject => @comment,
                                          :event_type        => 'comment_created')
     @comment.save
-    TimelineEvent.expects(:create!).with(:actor             => @mat, 
+    TimelineEvent.expects(:create!).with(:account           => @account,
+                                         :actor             => @mat, 
                                          :subject           => @list, 
                                          :secondary_subject => @comment, 
                                          :event_type        => 'comment_deleted')
