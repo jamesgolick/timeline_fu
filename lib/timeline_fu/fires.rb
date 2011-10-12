@@ -19,7 +19,8 @@ module TimelineFu
         on = opts.delete(:on)
         _if = opts.delete(:if)
         _unless = opts.delete(:unless)
-        event_class_name = opts.delete(:timeline_class_name) || "TimelineEvent"
+
+        event_class_names = Array(opts.delete(:event_class_name) || "TimelineEvent")
 
         method_name = :"fire_#{event_type}_after_#{on}"
         define_method(method_name) do
@@ -37,7 +38,9 @@ module TimelineFu
           end
           create_options[:event_type] = event_type.to_s
 
-          event_class_name.classify.constantize.create!(create_options)
+          event_class_names.each do |class_name|
+            class_name.classify.constantize.create!(create_options)
+          end
         end
 
         send(:"after_#{on}", method_name, :if => _if, :unless => _unless)

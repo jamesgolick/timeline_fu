@@ -83,9 +83,17 @@ class FiresTest < Test::Unit::TestCase
     @article.save
   end
 
-  def test_should_use_specified_class_when_present
+  def test_should_use_specified_event_class_when_present
     @company = Company.new(:owner => @james, :name => 'A great company!')
     CompanyEvent.expects(:create!).with(:actor => @james, :subject => @company, :event_type => 'company_created')
+    @company.save
+  end
+
+  def test_should_support_specifying_multiple_event_classes
+    CompanyEvent.stubs(:create!)
+    @company = Company.create(:owner => @james, :name => 'A great company!')
+    CompanyEvent.expects(:create!).with(:actor => @james, :subject => @company, :event_type => 'company_updated')
+    IRSEvent.expects(:create!).with(:actor => @james, :subject => @company, :event_type => 'company_updated')
     @company.save
   end
 end

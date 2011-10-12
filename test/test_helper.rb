@@ -93,11 +93,16 @@ end
 class Company < ActiveRecord::Base
   belongs_to :owner, :class_name => "Person"
 
-  fires :company_created, :actor               => :owner,
-                          :on                  => :create,
-                          :timeline_class_name => "CompanyEvent"
+  fires :company_created, :actor            => :owner,
+                          :on               => :create,
+                          :event_class_name => "CompanyEvent"
+
+  fires :company_updated, :actor            => :owner,
+                          :on               => :update,
+                          :event_class_name => ["CompanyEvent", "IRSEvent"]
 end
 
+IRSEvent = Class.new
 CompanyEvent = Class.new
 TimelineEvent = Class.new
 
