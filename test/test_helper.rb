@@ -1,7 +1,7 @@
 require 'rubygems'
-require 'activerecord'
-require 'mocha'
+require 'active_record'
 require 'test/unit'
+require 'mocha'
 require 'logger'
 
 require File.dirname(__FILE__)+'/../lib/timeline_fu'
@@ -35,6 +35,11 @@ ActiveRecord::Schema.define(:version => 0) do
   create_table :articles do |t|
     t.integer :site_id
     t.string :body
+  end
+
+  create_table :companies do |t|
+    t.integer :owner_id
+    t.string :name
   end
 end
 
@@ -85,6 +90,15 @@ class Article < ActiveRecord::Base
                           :site  => :site
 end
 
+class Company < ActiveRecord::Base
+  belongs_to :owner, :class_name => "Person"
+
+  fires :company_created, :actor               => :owner,
+                          :on                  => :create,
+                          :timeline_class_name => "CompanyEvent"
+end
+
+CompanyEvent = Class.new
 TimelineEvent = Class.new
 
 class Test::Unit::TestCase

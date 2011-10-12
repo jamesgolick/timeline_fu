@@ -82,4 +82,10 @@ class FiresTest < Test::Unit::TestCase
     TimelineEvent.expects(:create!).with(:actor => @james, :subject => @article, :event_type => 'article_created', :site => @site)
     @article.save
   end
+
+  def test_should_use_specified_class_when_present
+    @company = Company.new(:owner => @james, :name => 'A great company!')
+    CompanyEvent.expects(:create!).with(:actor => @james, :subject => @company, :event_type => 'company_created')
+    @company.save
+  end
 end

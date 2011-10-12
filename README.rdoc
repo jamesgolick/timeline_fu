@@ -43,6 +43,7 @@ The rest all fit neatly in an options hash.
 - :subject is automatically set to self, which is good most of the time.  You can however override it if you need to, using :subject.
 - :secondary_subject can let you specify something else that's related to the event. A comment to a blog post would be a good example.
 - :if => symbol or proc/lambda lets you put conditions on when a TimelineEvent is created. It's passed right to the after_xxx ActiveRecord event hook, so it's has the same behavior.
+- :timeline_class_name => string specifying the event class name you'd like you use. Defaults to "TimelineEvent".
 - any other parameter is treated as TimelineEvent's attribute
   - This is useful if you add a custom field to timeline_events table
 
