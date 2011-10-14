@@ -1,5 +1,4 @@
 require 'rubygems'
-require 'active_record'
 require 'test/unit'
 require 'mocha'
 require 'logger'
