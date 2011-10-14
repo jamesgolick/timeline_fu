@@ -1,8 +1,10 @@
 # -*- encoding: utf-8 -*-
+$:.push File.expand_path("../lib", __FILE__)
+require "timeline_fu/version"
 
 Gem::Specification.new do |s|
   s.name = %q{timeline_fu}
-  s.version = "0.4.3"
+  s.version = TimelineFu::VERSION
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["James Golick", "Mathieu Martin", "Francois Beausoleil"]
