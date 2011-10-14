@@ -3,7 +3,8 @@ require 'test/unit'
 require 'mocha'
 require 'logger'
 
-require File.dirname(__FILE__)+'/../lib/timeline_fu'
+$:.push File.expand_path("../lib", __FILE__)
+require "timeline_fu"
 
 ActiveRecord::Base.configurations = {'sqlite3' => {:adapter => 'sqlite3', :database => ':memory:'}}
 ActiveRecord::Base.establish_connection('sqlite3')
