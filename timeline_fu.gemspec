@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.version = TimelineFu::VERSION
   s.authors = ["James Golick", "Mathieu Martin", "Francois Beausoleil"]
   s.email = "james@giraffesoft.ca"
-  s.homepage = "http://github.com/giraffesoft/timeline_fu"
+  s.homepage = "https://github.com/jamesgolick/timeline_fu"
   s.summary = "Easily build timelines, much like GitHub's news feed"
   s.description = "Easily build timelines, much like GitHub's news feed"
 
