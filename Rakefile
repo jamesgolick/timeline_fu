@@ -2,9 +2,12 @@ require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 require 'bundler/gem_tasks'
+require 'appraisal'
 
-desc 'Default: run unit tests.'
-task :default => :test
+desc 'Default: run unit tests against all supported versions of ActiveRecord'
+task :default => ["appraisal:install"] do |t|
+  exec("rake appraisal test")
+end
 
 desc 'Test the timeline_fu plugin.'
 Rake::TestTask.new(:test) do |t|
