@@ -9,25 +9,14 @@ module TimelineFu
 
       def matches?(subject)
         @subject = subject
-        defines_callback_method? && setups_up_callback?
+        defines_callback_method?
       end
 
       def defines_callback_method?
-        if @subject.methods.include?(@method.to_s)
+        if @subject.methods.include?(@method)
           true
         else
-          @missing = "#{@subject.name} does not respond to #{@method}"
-          false
-        end
-      end
-
-      def setups_up_callback?
-        callback_chain_name = "after_#{@opts[:on]}_callback_chain"
-        callback_chain = @subject.send(callback_chain_name)
-        if callback_chain.any? {|chain| chain.method == @method }
-          true
-        else
-          @missing = "does setup after #{@opts[:on]} callback for #{@method}"
+          @missing = "#{@subject.class.name} instance does not respond to #{@method}"
           false
         end
       end
@@ -37,7 +26,7 @@ module TimelineFu
       end
 
       def expectation
-        expected = "#{@subject.name} to #{description}"
+        expected = "#{@subject.class.name} to #{description}"
       end
 
       def failure_message
