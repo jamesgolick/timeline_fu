@@ -9,12 +9,11 @@ module TimelineFu
 
       def matches?(subject)
         @subject = subject
-
         defines_callback_method? && setups_up_callback?
       end
 
       def defines_callback_method?
-        if @subject.instance_methods.include?(@method.to_s)
+        if @subject.methods.include?(@method.to_s)
           true
         else
           @missing = "#{@subject.name} does not respond to #{@method}"
@@ -48,7 +47,6 @@ module TimelineFu
       def negative_failure_message
         "Did not expect #{expectation}"
       end
-
     end
 
     def fire_event(event_type, opts)
