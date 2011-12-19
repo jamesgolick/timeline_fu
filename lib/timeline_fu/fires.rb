@@ -12,39 +12,31 @@ module TimelineFu
         if opts[:on].kind_of?(Array)
           opts[:on].each { |on| fires(event_type, opts.merge({:on => on})) }
           return
-        end       
+        end
 
         opts[:subject] = :self unless opts.has_key?(:subject)
 
         method_name = :"fire_#{event_type}_after_#{opts[:on]}"
         define_method(method_name) do
-          opts[:actor] = [] << opts[:actor] unless opts[:actor].kind_of?(Array)
-            
-            opts[:actor].each do |actor|
-            
-              new_opts = opts.merge({:actor => actor})
-              
-              create_options = [:actor, :subject, :secondary_subject].inject({}) do |memo, sym|
-                if new_opts[sym]
-                  p 1
-                  if new_opts[sym].respond_to?(:call)
-                    memo[sym] = new_opts[sym].call(self)
-                    p 2
-                  elsif new_opts[sym] == :self
-                    memo[sym] = self
-                    p 3
-                  else
-                    memo[sym] = send(new_opts[sym])
-                    p 4
-                  end
-                end
-                p "memo: #{memo}"
-                memo
+          create_options = [:actor, :subject, :secondary_subject].inject({}) do |memo, sym|
+            if opts[sym]
+              if opts[sym].respond_to?(:call)
+                memo[sym] = opts[sym].call(self)
+              elsif opts[sym] == :self
+                memo[sym] = self
+              else
+                memo[sym] = send(opts[sym])
               end
-              p "create_options: #{create_options}"
-              create_options[:event_type] = event_type.to_s
-              TimelineEvent.create!(create_options)
-            end          
+            end
+            memo
+          end
+          create_options[:event_type] = event_type.to_s
+          if create_options[:actor].kind_of?(Array)
+            create_options[:actor].each { |actor| TimelineEvent.create!(create_options.merge({:actor => actor})) }
+          else
+            TimelineEvent.create!(create_options)
+          end
+          
         end
 
         send(:"after_#{opts[:on]}", method_name, :if => opts[:if])
