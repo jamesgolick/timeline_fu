@@ -38,9 +38,10 @@ module TimelineFu
                     p 4
                   end
                 end
+                p "memo: #{memo}"
                 memo
               end
-              
+              p "create_options: #{create_options}"
               create_options[:event_type] = event_type.to_s
               TimelineEvent.create!(create_options)
             end          
