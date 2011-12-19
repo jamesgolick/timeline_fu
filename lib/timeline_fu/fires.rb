@@ -12,11 +12,7 @@ module TimelineFu
         if opts[:on].kind_of?(Array)
           opts[:on].each { |on| fires(event_type, opts.merge({:on => on})) }
           return
-        end
-        if opts[:actor].kind_of?(Array)
-          opts[:actor].each { |actor| fires(event_type, opts.merge({:actor => actor})) }
-          return
-        end        
+        end       
 
         opts[:subject] = :self unless opts.has_key?(:subject)
 
@@ -29,13 +25,13 @@ module TimelineFu
               new_opts = opts.merge({:actor => actor})
               
               create_options = [:actor, :subject, :secondary_subject].inject({}) do |memo, sym|
-                if new_opts[sym]
-                  if new_opts[sym].respond_to?(:call)
-                    memo[sym] = new_opts[sym].call(self)
-                  elsif new_opts[sym] == :self
+                if opts[sym]
+                  if opts[sym].respond_to?(:call)
+                    memo[sym] = opts[sym].call(self)
+                  elsif opts[sym] == :self
                     memo[sym] = self
                   else
-                    memo[sym] = send(new_opts[sym])
+                    memo[sym] = send(opts[sym])
                   end
                 end
                 memo
