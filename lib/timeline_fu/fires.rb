@@ -13,6 +13,11 @@ module TimelineFu
           opts[:on].each { |on| fires(event_type, opts.merge({:on => on})) }
           return
         end
+        
+        if opts[:actor].kind_of?(Array)
+          opts[:actor].each { |actor| fires(event_type, opts.merge({:actor => actor})) }
+          return
+        end        
 
         opts[:subject] = :self unless opts.has_key?(:subject)
 
