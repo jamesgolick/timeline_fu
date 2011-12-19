@@ -25,13 +25,17 @@ module TimelineFu
               new_opts = opts.merge({:actor => actor})
               
               create_options = [:actor, :subject, :secondary_subject].inject({}) do |memo, sym|
-                if opts[sym]
-                  if opts[sym].respond_to?(:call)
-                    memo[sym] = opts[sym].call(self)
-                  elsif opts[sym] == :self
+                if new_opts[sym]
+                  p 1
+                  if new_opts[sym].respond_to?(:call)
+                    memo[sym] = new_opts[sym].call(self)
+                    p 2
+                  elsif new_opts[sym] == :self
                     memo[sym] = self
+                    p 3
                   else
-                    memo[sym] = send(opts[sym])
+                    memo[sym] = send(new_opts[sym])
+                    p 4
                   end
                 end
                 memo
