@@ -40,11 +40,10 @@ module TimelineFu
                 end
                 memo
               end
+              
               create_options[:event_type] = event_type.to_s
-          
-            end
-
-          TimelineEvent.create!(create_options)
+              TimelineEvent.create!(create_options)
+            end          
         end
 
         send(:"after_#{opts[:on]}", method_name, :if => opts[:if])
