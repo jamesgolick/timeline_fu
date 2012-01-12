@@ -62,7 +62,8 @@ class List < ActiveRecord::Base
   has_many :comments
   
   fires :list_created_or_updated,  :actor  => :author, 
-                                   :on     => [:create, :update]
+                                   :on     => [:create, :update],
+                                   :callback => :callback_method
 end
 
 class Comment < ActiveRecord::Base

@@ -76,6 +76,7 @@ class FiresTest < Test::Unit::TestCase
     @comment.destroy
   end
 
+
   def test_should_set_additional_attributes_when_present
     @site = Site.create(:name => 'foo.com')
     @article = Article.new(:body => 'cool article!', :author => @james, :site => @site)
@@ -95,5 +96,14 @@ class FiresTest < Test::Unit::TestCase
     CompanyEvent.expects(:create!).with(:actor => @james, :subject => @company, :event_type => 'company_updated')
     IRSEvent.expects(:create!).with(:actor => @james, :subject => @company, :event_type => 'company_updated')
     @company.save
+  end
+
+  def test_should_fire_callback_hook_after_each_event
+    @list = List.new(hash_for_list(:author => @james))
+    def @list.callback_method(e); true; end
+    event = TimelineEvent.new
+    TimelineEvent.expects(:create!).with(:actor => @james, :subject => @list, :event_type => 'list_created_or_updated').returns(event)
+    @list.expects(:callback_method).with(event)
+    @list.save
   end
 end

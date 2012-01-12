@@ -10,7 +10,7 @@ module TimelineFu
 
         # Array provided, set multiple callbacks
         if opts[:on].kind_of?(Array)
-          opts[:on].each { |on| fires(event_type, opts.merge({:on => on})) }
+          opts[:on].each { |on| fires(event_type, opts.merge({on: on})) }
           return
         end
 
@@ -38,21 +38,33 @@ module TimelineFu
           fire(event_type, create_options, opts)
         end
 
-        send(:"after_#{on}", method_name, :if => _if, :unless => _unless)
+        send(:"after_#{on}", method_name, if: _if, unless: _unless)
       end
 
       def fire(event_type, create_options, opts = {})
         create_options[:event_type] = event_type.to_s
 
-        event_class_name = opts.delete(:event_class_name) || "TimelineEvent"
-        event_class_name.classify.constantize.create!(create_options)
+        callback = opts.delete(:callback)
+        event_class_names = Array(opts.delete(:event_class_name) || "TimelineEvent")
+
+        event_class_names.each do |class_name|
+          event = class_name.classify.constantize.create!(create_options)
+
+          if callback && self.respond_to?(callback)
+            if [1,-1].include?(method(callback).arity)
+              self.send(callback, event)
+            elsif method(callback).arity == 0
+              self.send(callback)
+            end
+          end
+        end
       end
     end
 
     def fire(event_type, create_options, opts = {})
       create_options[:subject] = self unless create_options.has_key?(:subject)
 
-      self.class.fire(event_type, create_options)
+      self.class.fire(event_type, create_options, opts)
     end
   end
 end
