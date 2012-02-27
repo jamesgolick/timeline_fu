@@ -20,8 +20,6 @@ module TimelineFu
         _if = opts.delete(:if)
         _unless = opts.delete(:unless)
 
-        event_class_names = Array(opts.delete(:event_class_name) || "TimelineEvent")
-
         method_name = :"fire_#{event_type}_after_#{on}"
         define_method(method_name) do
           create_options = opts.keys.inject({}) do |memo, sym|
@@ -36,15 +34,25 @@ module TimelineFu
             end
             memo
           end
-          create_options[:event_type] = event_type.to_s
 
-          event_class_names.each do |class_name|
-            class_name.classify.constantize.create!(create_options)
-          end
+          fire(event_type, create_options, opts)
         end
 
         send(:"after_#{on}", method_name, :if => _if, :unless => _unless)
       end
+
+      def fire(event_type, create_options, opts = {})
+        create_options[:event_type] = event_type.to_s
+
+        event_class_name = opts.delete(:event_class_name) || "TimelineEvent"
+        event_class_name.classify.constantize.create!(create_options)
+      end
+    end
+
+    def fire(event_type, create_options, opts = {})
+      create_options[:subject] = self unless create_options.has_key?(:subject)
+
+      self.class.fire(event_type, create_options)
     end
   end
 end
