@@ -31,8 +31,12 @@ module TimelineFu
             memo
           end
           create_options[:event_type] = event_type.to_s
-
-          TimelineEvent.create!(create_options)
+          if create_options[:actor].kind_of?(Array)
+            create_options[:actor].each { |actor| TimelineEvent.create!(create_options.merge({:actor => actor})) }
+          else
+            TimelineEvent.create!(create_options)
+          end
+          
         end
 
         send(:"after_#{opts[:on]}", method_name, :if => opts[:if])
