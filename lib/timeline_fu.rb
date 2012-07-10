@@ -1,6 +1,4 @@
 require 'timeline_fu/fires'
-
-module TimelineFu  
-end
+require 'timeline_fu/version'
 
 ActiveRecord::Base.send :include, TimelineFu::Fires

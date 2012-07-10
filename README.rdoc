@@ -7,19 +7,16 @@ Easily build timelines, much like GitHub's news feed.
 TimelineFu requires you to have a TimelineEvent model. 
 The simplest way is to use the generator.
 
-  $ script/generate timeline_fu && rake db:migrate
+  $ rails generate timeline_fu && rake db:migrate
         exists  db/migrate
         create  db/migrate/20090333222034_create_timeline_events.rb
         create  app/models/timeline_event.rb
-  # Migration blabber...
 
 Next step is to determine what generates an event in your various models.
 
   class Post < ActiveRecord::Base
-    #...
     belongs_to :author, :class_name => 'Person'
-    fires :new_post, :on    => :create,
-                     :actor => :author
+    fires :new_post, :on    => :create, :actor => :author
   end
 
 You can add 'fires' statements to as many models as you want on as many models
@@ -47,12 +44,11 @@ The rest all fit neatly in an options hash.
 Here's another example:
 
   class Comment < ActiveRecord::Base
-    #...
     belongs_to :commenter, :class_name => 'Person'
     belongs_to :post
     fires :new_comment, :on                 => :create,
                         :actor              => :commenter,
-                        #implicit :subject  => self,
+                        # implicit :subject => self,
                         :secondary_subject  => 'post',
                         :if => lambda { |comment| comment.commenter != comment.post.author }
   end
@@ -97,6 +93,22 @@ Contributions are welcome :-)
   # Gemfile
   gem "timeline_fu"
 
+== Testing with RSpec
+
+TimelineFu bundles a RSpec matcher to test models events.
+
+  require 'timeline_fu/matchers'
+
+  RSpec.configure do |config|
+    config.include TimelineFu::Matchers, :type => :model
+  end
+
+Now you can use the +fire_event+ matcher on your specs.
+
+  describe Post do
+    it { should fire_event(:new_post, :on => :create) }
+  end 
+  
 == License
 
 Copyright (c) 2008 James Golick, released under the MIT license
