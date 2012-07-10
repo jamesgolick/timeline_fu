@@ -1,10 +1,10 @@
 require 'rubygems'
-require 'activerecord'
-require 'mocha'
 require 'test/unit'
+require 'mocha'
 require 'logger'
 
-require File.dirname(__FILE__)+'/../lib/timeline_fu'
+$:.push File.expand_path("../lib", __FILE__)
+require "timeline_fu"
 
 ActiveRecord::Base.configurations = {'sqlite3' => {:adapter => 'sqlite3', :database => ':memory:'}}
 ActiveRecord::Base.establish_connection('sqlite3')
@@ -26,6 +26,20 @@ ActiveRecord::Schema.define(:version => 0) do
   create_table :comments do |t|
     t.integer :list_id, :author_id
     t.string  :body
+  end
+
+  create_table :sites do |t|
+    t.string  :name
+  end
+
+  create_table :articles do |t|
+    t.integer :site_id
+    t.string :body
+  end
+
+  create_table :companies do |t|
+    t.integer :owner_id
+    t.string :name
   end
 end
 
@@ -64,6 +78,32 @@ class Comment < ActiveRecord::Base
                           :secondary_subject => :self
 end
 
+class Site < ActiveRecord::Base
+end
+
+class Article < ActiveRecord::Base
+  belongs_to :author, :class_name => "Person"
+  belongs_to :site
+
+  fires :article_created, :actor => :author,
+                          :on    => :create,
+                          :site  => :site
+end
+
+class Company < ActiveRecord::Base
+  belongs_to :owner, :class_name => "Person"
+
+  fires :company_created, :actor            => :owner,
+                          :on               => :create,
+                          :event_class_name => "CompanyEvent"
+
+  fires :company_updated, :actor            => :owner,
+                          :on               => :update,
+                          :event_class_name => ["CompanyEvent", "IRSEvent"]
+end
+
+IRSEvent = Class.new
+CompanyEvent = Class.new
 TimelineEvent = Class.new
 
 class Test::Unit::TestCase

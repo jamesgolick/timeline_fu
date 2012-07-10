@@ -1,29 +1,19 @@
 require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
+require 'bundler/gem_tasks'
+require 'appraisal'
 
-desc 'Default: run unit tests.'
-task :default => :test
+desc 'Default: run unit tests against all supported versions of ActiveRecord'
+task :default => ["appraisal:install"] do |t|
+  exec("rake appraisal test")
+end
 
 desc 'Test the timeline_fu plugin.'
 Rake::TestTask.new(:test) do |t|
   t.libs << 'lib'
   t.pattern = 'test/**/*_test.rb'
   t.verbose = true
-end
-
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |s|
-    s.name = "timeline_fu"
-    s.summary = %Q{Easily build timelines, much like GitHub's news feed}
-    s.email = "james@giraffesoft.ca"
-    s.homepage = "http://github.com/giraffesoft/timeline_fu"
-    s.description = "Easily build timelines, much like GitHub's news feed"
-    s.authors = ["James Golick", "Mathieu Martin", "Francois Beausoleil"]
-  end
-rescue LoadError
-  puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"
 end
 
 desc 'Generate documentation for the timeline_fu plugin.'
