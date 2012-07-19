@@ -1,3 +1,4 @@
+require 'pry'
 require File.dirname(__FILE__)+'/test_helper'
 
 class FiresTest < Test::Unit::TestCase
@@ -93,7 +94,6 @@ class FiresTest < Test::Unit::TestCase
 
   def test_should_fire_callback_hook_after_each_event
     @list = List.new(hash_for_list(author: @james))
-    def @list.callback_method(e); true; end
     event = TimelineEvent.new
     TimelineEvent.expects(:create!).with(actor: @james, subject: @list, event_type: 'list_created_or_updated').returns(event)
     @list.expects(:callback_method).with(event)

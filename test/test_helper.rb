@@ -6,8 +6,8 @@ require 'logger'
 $:.push File.expand_path('../lib', __FILE__)
 require "timeline_fu"
 
-ActiveRecord::Base.configurations = { 'sqlite': { adapter: 'sqlite3', database: ':memory:' } }
-ActiveRecord::Base.establish_connection('sqlite3')
+ActiveRecord::Base.configurations = { 'sqlite' => { adapter: 'sqlite3', database: ':memory:' } }
+ActiveRecord::Base.establish_connection('sqlite')
 
 ActiveRecord::Base.logger = Logger.new(STDERR)
 ActiveRecord::Base.logger.level = Logger::WARN
@@ -19,14 +19,16 @@ ActiveRecord::Schema.define(version: 0) do
   end
 
   create_table :lists do |t|
-    t.integer :author_id
     t.string  :title
+
+    t.references :author
   end
 
   create_table :comments do |t|
-    t.integer :list_id
-    t.integer :author_id
     t.string  :body
+
+    t.references :author
+    t.references :list
   end
 
   create_table :sites do |t|
@@ -34,13 +36,16 @@ ActiveRecord::Schema.define(version: 0) do
   end
 
   create_table :articles do |t|
-    t.integer :site_id
     t.string :body
+
+    t.references :author
+    t.references :site
   end
 
   create_table :companies do |t|
-    t.integer :owner_id
     t.string :name
+
+    t.references :owner
   end
 end
 
@@ -50,6 +55,7 @@ class Person < ActiveRecord::Base
   fires :follow_created,  on:     :update,
                           actor:  lambda { |person| person.new_watcher },
                           if:     lambda { |person| !person.new_watcher.nil? }
+
   fires :person_updated,  on:     :update,
                           if:     :fire?
 
@@ -59,21 +65,26 @@ class Person < ActiveRecord::Base
 end
 
 class List < ActiveRecord::Base
-  belongs_to :author, class_name: "Person"
+  belongs_to :author, class_name: 'Person'
   has_many :comments
 
   fires :list_created_or_updated,  actor:  :author,
                                    on:     [:create, :update],
                                    callback: :callback_method
+
+  def self.callback_method(e)
+    true
+  end
 end
 
 class Comment < ActiveRecord::Base
   belongs_to :list
-  belongs_to :author, class_name: "Person"
+  belongs_to :author, class_name: 'Person'
 
   fires :comment_created, actor:   :author,
                           on:      :create,
                           secondary_subject: :list
+
   fires :comment_deleted, actor:   :author,
                           on:      :destroy,
                           subject: :list,
@@ -97,11 +108,11 @@ class Company < ActiveRecord::Base
 
   fires :company_created, actor:            :owner,
                           on:               :create,
-                          event_class_name: "CompanyEvent"
+                          event_class_name: 'CompanyEvent'
 
   fires :company_updated, actor:            :owner,
                           on:               :update,
-                          event_class_name: ["CompanyEvent", "IRSEvent"]
+                          event_class_name: ['CompanyEvent', 'IRSEvent']
 end
 
 IRSEvent = Class.new

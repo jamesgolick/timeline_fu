@@ -14,8 +14,6 @@ module TimelineFu
           return
         end
 
-        opts[:subject] = :self unless opts.has_key?(:subject)
-
         on = opts.delete(:on)
         _if = opts.delete(:if)
         _unless = opts.delete(:unless)
@@ -28,6 +26,8 @@ module TimelineFu
                 memo[sym] = opts[sym].call(self)
               elsif opts[sym] == :self
                 memo[sym] = self
+              elsif sym == :callback || sym == :event_class_name
+                memo[sym] = opts[sym]
               else
                 memo[sym] = send(opts[sym])
               end
@@ -35,36 +35,35 @@ module TimelineFu
             memo
           end
 
-          fire(event_type, create_options, opts)
+          fire_event(event_type, create_options)
         end
 
         send(:"after_#{on}", method_name, if: _if, unless: _unless)
-        end
+      end
 
-        def fire(event_type, create_options, opts = {})
-          create_options[:event_type] = event_type.to_s
+      def fire_event(event_type, create_options)
+        create_options[:subject] = self unless create_options.has_key?(:subject)
+        create_options[:event_type] = event_type.to_s
 
-          callback = opts.delete(:callback)
-          event_class_names = Array(opts.delete(:event_class_name) || "TimelineEvent")
+        callback = create_options.delete(:callback)
+        event_class_names = Array(create_options.delete(:event_class_name) || 'TimelineEvent')
 
-          event_class_names.each do |class_name|
-            event = class_name.classify.constantize.create!(create_options)
+        event_class_names.each do |class_name|
+          event = class_name.classify.constantize.create!(create_options)
 
-            if callback && self.respond_to?(callback)
-              if [1,-1].include?(method(callback).arity)
-                self.send(callback, event)
-              elsif method(callback).arity == 0
-                self.send(callback)
-              end
+          if callback && self.respond_to?(callback)
+            if [1,-1].include?(method(callback).arity)
+              self.send(callback, event)
+            elsif method(callback).arity == 0
+              self.send(callback)
             end
           end
         end
-        end
-
-        def fire(event_type, create_options, opts = {})
-          create_options[:subject] = self unless create_options.has_key?(:subject)
-
-          self.class.fire(event_type, create_options, opts)
-        end
       end
     end
+
+    def fire_event(event_type, create_options)
+      self.class.fire_event(event_type, create_options)
+    end
+  end
+end
