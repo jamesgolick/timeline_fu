@@ -34,7 +34,7 @@ module TimelineFu
       end
 
       def description
-        "fire a #{@event_type} event"
+        "fire the #{@event_type} event"
       end
 
       def expectation

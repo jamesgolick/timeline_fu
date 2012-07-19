@@ -15,6 +15,5 @@ module TimelineFu
         assert_rejects matcher, self.class.name.gsub(/Test$/, '').constantize
       end
     end
-
   end
 end
