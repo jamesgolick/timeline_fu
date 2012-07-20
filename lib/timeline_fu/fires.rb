@@ -6,7 +6,7 @@ module TimelineFu
 
     module ClassMethods
       def fires(event_type, opts)
-        raise ArgumentError, "Argument :on is mandatory" unless opts.has_key?(:on)
+        raise ArgumentError, 'Argument :on is mandatory' unless opts.has_key?(:on)
 
         # Array provided, set multiple callbacks
         if opts[:on].kind_of?(Array)
