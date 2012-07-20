@@ -1,10 +1,8 @@
-require 'rubygems'
-require 'test/unit'
-require 'mocha'
+require 'spec_helper'
 require 'logger'
 
-$:.push File.expand_path('../lib', __FILE__)
-require "timeline_fu"
+#$:.push File.expand_path('../lib', __FILE__)
+#require 'timeline_fu'
 
 ActiveRecord::Base.configurations = { 'sqlite' => { adapter: 'sqlite3', database: ':memory:' } }
 ActiveRecord::Base.establish_connection('sqlite')
@@ -56,8 +54,8 @@ class Person < ActiveRecord::Base
                           actor:  lambda { |person| person.new_watcher },
                           if:     lambda { |person| !person.new_watcher.nil? }
 
-  fires :person_updated,  on:     :update,
-                          if:     :fire?
+  fires :person_updated,  on:      :update,
+                          if:      :fire?
 
   def fire?
     new_watcher.nil? && fire
@@ -95,7 +93,7 @@ class Site < ActiveRecord::Base
 end
 
 class Article < ActiveRecord::Base
-  belongs_to :author, class_name: "Person"
+  belongs_to :author, class_name: 'Person'
   belongs_to :site
 
   fires :article_created, actor: :author,
@@ -104,7 +102,7 @@ class Article < ActiveRecord::Base
 end
 
 class Company < ActiveRecord::Base
-  belongs_to :owner, class_name: "Person"
+  belongs_to :owner, class_name: 'Person'
 
   fires :company_created, actor:            :owner,
                           on:               :create,
@@ -119,21 +117,18 @@ IRSEvent = Class.new
 CompanyEvent = Class.new
 TimelineEvent = Class.new
 
-class Test::Unit::TestCase
-  protected
-    def hash_for_list(opts = {})
-      { title: 'whatever' }.merge(opts)
-    end
+def hash_for_list(opts = {})
+  { title: 'whatever' }.merge(opts)
+end
 
-    def create_list(opts = {})
-      List.create!(hash_for_list(opts))
-    end
+def create_list(opts = {})
+  List.create!(hash_for_list(opts))
+end
 
-    def hash_for_person(opts = {})
-      { email: 'james' }.merge(opts)
-    end
+def hash_for_person(opts = {})
+  { email: 'james' }.merge(opts)
+end
 
-    def create_person(opts = {})
-      Person.create!(hash_for_person(opts))
-    end
+def create_person(opts = {})
+  Person.create!(hash_for_person(opts))
 end

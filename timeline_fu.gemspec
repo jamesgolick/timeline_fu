@@ -24,8 +24,8 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'appraisal'
   s.add_development_dependency 'logger'
-  s.add_development_dependency 'mocha'
   s.add_development_dependency 'sqlite3'
   s.add_development_dependency 'pry'
   s.add_development_dependency 'pry-debugger'
+  s.add_development_dependency 'rspec'
 end

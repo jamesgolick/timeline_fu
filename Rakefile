@@ -1,19 +1,19 @@
 require 'rake'
-require 'rake/testtask'
-require 'rdoc/task'
-require 'bundler/gem_tasks'
 require 'appraisal'
+require 'bundler/gem_tasks'
+require 'rdoc/task'
+require 'rspec/core'
+require 'rspec/core/rake_task'
 
 desc 'Default: run unit tests against all supported versions of ActiveRecord'
-task :default => ["appraisal:install"] do |t|
-  exec("rake appraisal test")
+task default: ['appraisal:install'] do |t|
+  exec('rake appraisal test')
 end
 
 desc 'Test the timeline_fu plugin.'
-Rake::TestTask.new(:test) do |t|
-  t.libs << 'lib'
-  t.pattern = 'test/**/*_test.rb'
-  t.verbose = true
+RSpec::Core::RakeTask.new(:spec) do |spec|
+  spec.pattern = FileList['spec/**/*_spec.rb']
+  spec.rspec_opts = ['--backtrace']
 end
 
 desc 'Generate documentation for the timeline_fu plugin.'
