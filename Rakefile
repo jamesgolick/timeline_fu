@@ -1,5 +1,6 @@
 require 'rake'
 require 'appraisal'
+require 'bundler/setup'
 require 'bundler/gem_tasks'
 require 'rdoc/task'
 require 'rspec/core'
