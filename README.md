@@ -1,4 +1,4 @@
-# TimelineFu [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/styx/timeline_fu)
+# TimelineFu [![Build Status](https://secure.travis-ci.org/styx/timeline_fu.png?branch=master)](http://travis-ci.org/styx/timeline_fu) [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/styx/timeline_fu)
 
 Easily build timelines, much like GitHub's news feed.
 
