@@ -12,7 +12,7 @@ task default: ['appraisal:install'] do |t|
 end
 
 desc 'Test the timeline_fu plugin.'
-RSpec::Core::RakeTask.new(:spec) do |spec|
+RSpec::Core::RakeTask.new(:test) do |spec|
   spec.pattern = FileList['spec/**/*_spec.rb']
   spec.rspec_opts = ['--backtrace']
 end
