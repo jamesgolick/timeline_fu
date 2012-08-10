@@ -4,7 +4,7 @@ module TimelineFu
       should "fire #{event_type} on #{opts[:on]}" do
         matcher = fire_event(event_type, opts)
 
-        assert_accepts matcher, self.class.name.gsub(/Test$/, '').constantize
+        assert_accepts matcher, event_name
       end
     end
 
@@ -12,8 +12,15 @@ module TimelineFu
       should "fire #{event_type} on #{opts[:on]}" do
         matcher = fire_event(event_type, opts)
 
-        assert_rejects matcher, self.class.name.gsub(/Test$/, '').constantize
+        assert_rejects matcher, event_name
       end
     end
+
+    private
+
+    def event_name
+      self.class.name.gsub(/Test$/, '').constantize
+    end
+
   end
 end
