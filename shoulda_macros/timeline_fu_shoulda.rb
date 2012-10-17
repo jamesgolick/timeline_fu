@@ -4,7 +4,7 @@ require 'timeline_fu/macros'
 module ActiveSupport
   class TestCase
     include TimelineFu::Matchers
-    if ! defined? Spec
+    if !defined?(Spec)
       extend TimelineFu::Macros
     end
   end

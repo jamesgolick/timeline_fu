@@ -1,6 +1,7 @@
-require 'timeline_fu/fires'
+require 'active_record'
 
-module TimelineFu  
+module TimelineFu
+  autoload :Fires, 'timeline_fu/fires'
 end
 
-ActiveRecord::Base.send :include, TimelineFu::Fires
+ActiveRecord::Base.send(:include, TimelineFu::Fires)
