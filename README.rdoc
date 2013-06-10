@@ -43,6 +43,7 @@ The rest all fit neatly in an options hash.
 - :subject is automatically set to self, which is good most of the time.  You can however override it if you need to, using :subject.
 - :secondary_subject can let you specify something else that's related to the event. A comment to a blog post would be a good example.
 - :if => symbol or proc/lambda lets you put conditions on when a TimelineEvent is created. It's passed right to the after_xxx ActiveRecord event hook, so it's has the same behavior.
+- :subject_description => Description of the subject (like subject.name). This is important for items deleted. When listing the events somewhere in your code and you should first check whether the subject is null (because it has been deleted) and if so, you should just print its description instead. 
 
 Here's another example:
 
